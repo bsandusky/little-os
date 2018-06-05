@@ -1,7 +1,10 @@
+ARCH = x86_64
 AS = $(DOCKER) nasm
 ASFLAGS = -f bin
-CONTAINER_COMMAND = docker run --rm
-CONTAINER_FLAGS = -v$(shell pwd):$(shell pwd) -w$(shell pwd)
+AS_INPUT = boot_sect_simple.asm
+AS_OUTPUT = boot_sect_simple.bin
+CONTAINER_COMMAND = docker run
+CONTAINER_FLAGS =  --rm -v$(shell pwd):$(shell pwd) -w$(shell pwd)
 CONTAINER = bsandusky/muslbox:0.1
 DOCKER = $(CONTAINER_COMMAND) $(CONTAINER_FLAGS) $(CONTAINER)
 
@@ -14,10 +17,10 @@ DOCKER = $(CONTAINER_COMMAND) $(CONTAINER_FLAGS) $(CONTAINER)
 # all: kernel.elf
 
 assemble:
-	$(AS) $(ASFLAGS) boot_sect_simple.asm -o boot_sect_simple.bin
+	$(AS) $(ASFLAGS)  $(AS_INPUT) -o $(AS_OUTPUT)
 
 run: 
-	qemu-system-x86_64 boot_sect_simple.bin
+	qemu-system-$(ARCH) $(AS_OUTPUT)
 
 # kernel.elf: $(OBJECTS)
 # 	$(DOCKER) ld $(LDFLAGS) $(OBJECTS) -o kernel.elf

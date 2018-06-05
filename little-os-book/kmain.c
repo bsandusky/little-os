@@ -1,5 +1,3 @@
-
-
 void kmain(void)
 {
     

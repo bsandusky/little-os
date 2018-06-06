@@ -1,8 +1,8 @@
 ARCH = x86_64
 AS = $(DOCKER) nasm
 ASFLAGS = -f bin
-AS_INPUT = boot_sect_simple.asm
-AS_OUTPUT = boot_sect_simple.bin
+AS_INPUT = boot_sect_hello_world.asm
+AS_OUTPUT = $(AS_INPUT).bin
 CONTAINER_COMMAND = docker run
 CONTAINER_FLAGS =  --rm -v$(shell pwd):$(shell pwd) -w$(shell pwd)
 CONTAINER = bsandusky/muslbox:0.1

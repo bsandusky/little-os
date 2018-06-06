@@ -1,7 +1,7 @@
 ARCH = x86_64
 AS = $(DOCKER) nasm
 ASFLAGS = -f bin
-AS_INPUT = boot_sect_disk.asm
+AS_INPUT = boot_sect_pm.asm
 AS_OUTPUT = $(AS_INPUT).bin
 CONTAINER_COMMAND = docker run
 CONTAINER_FLAGS =  --rm -v$(shell pwd):$(shell pwd) -w$(shell pwd)

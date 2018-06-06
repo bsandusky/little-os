@@ -1,6 +1,10 @@
 # Mac shit
 .DS_Store
 
+# Binaries
+*.bin
+*.dis
+
 # Prerequisites
 *.d
 

@@ -17,6 +17,9 @@ kernel.o: kernel.c
 kernel.dis: kernel.bin
 	ndisasm -b 32 $< > $@
 
+image.dis: os-image.bin
+	ndisasm -b 32 $< > $@
+
 kernel_entry.o: kernel_entry.asm
 	$(DOCKER) nasm $< -f elf -o $@
 
@@ -24,7 +27,7 @@ os-image.bin: boot.bin kernel.bin
 	cat $^ > $@
 
 run: os-image.bin
-	qemu-system-i386 -fda $<
+	qemu-system-i386 -drive format=raw,if=floppy,file=$<
 
 clean:
 	rm -fr *.bin *.dis *.o os-image.bin *.map

@@ -12,11 +12,11 @@ call load_kernel
 call switch_to_pm
 jmp $
 
-%include "boot_sect/print_string.asm"
-%include "boot_sect/disk_load.asm"
-%include "boot_sect/gdt.asm"
-%include "boot_sect/print_string_pm.asm"
-%include "boot_sect/switch_to_pm.asm"
+%include "print_string.asm"
+%include "disk_load.asm"
+%include "gdt.asm"
+%include "switch_to_pm.asm"
+%include "print_string_pm.asm"
 
 [bits 16]
 load_kernel:

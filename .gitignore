@@ -1,6 +1,9 @@
 # Mac shit
 .DS_Store
 
+# Directories
+examples/
+
 # Binaries
 *.bin
 *.dis

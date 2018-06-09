@@ -20,11 +20,11 @@ kernel.bin: boot/kernel_entry.o $(OBJ)
 
 # assemble kernel entry
 %.o: %.asm
-	$(DOCKER) nasm $< -f elf -o $@
+	$(DOCKER) nasm $< -f elf -I 'boot/' -o $@
 
 # assemble the boot binary
 %.bin: %.asm
-	$(DOCKER) nasm $< -f bin -o $@
+	$(DOCKER) nasm $< -f bin -I 'boot/' -o $@
 
 os-image.bin: boot/boot.bin kernel.bin
 	cat $^ > $@
@@ -34,7 +34,7 @@ run: os-image.bin
 
 clean:
 	rm -fr *.bin *.dis *.o
-	rm -fr kernel/*.o boot/*.bin drivers/*.0
+	rm -fr kernel/*.o boot/*.bin boot/*.o drivers/*.o
 
 kernel.dis: kernel.bin
 	ndisasm -b 32 $< > $@

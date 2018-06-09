@@ -2,10 +2,12 @@
 gdt_start:
 
 gdt_null:
+    ; GDT starts with null 8-byte
     dd 0x0          ; Mandatory null descriptor (8 bytes)
     dd 0x0          ; dd == define double word (4 bytes each)
 
-gdt_code:                   ; Code segment descriptor
+; Code segment descriptor
+gdt_code:
     ; base=0x0 limit=0xfffff
     ; 1st flags: (present)1 (privilege)00 (descriptor types)1 -> 1001b
     ; type flags: (code)1 (conforming)0 (readable)1 (accessed)0 -> 1010b
@@ -17,7 +19,8 @@ gdt_code:                   ; Code segment descriptor
     db 11001111b    ; 2nd flags, Limit (bits 16-19)
     db 0x0          ; Base (bits 24-31)
 
-gdt_data:                   ; Data segment descriptor
+; Data segment descriptor
+gdt_data:
     ; Same as before except for type flags:
     ; type flags: (code)0 (expand down)0 (writable)1 (accessed)0 -> 0010b
     dw 0xffff       ; Limit (bits 0-15)
@@ -27,13 +30,13 @@ gdt_data:                   ; Data segment descriptor
     db 11001111b    ; 2nd flags, Limit (bits 16-19)
     db 0x0          ; Base (bits 24-31)
 
-gdt_end:                    ; End label allows us to calcualte size of GDT for DGT descriptor
+; End label allows us to calcualte size of GDT for DGT descriptor
+gdt_end:
 
 ; GDT descriptor
-
 gdt_descriptor:
-    dw gdt_end - gdt_start - 1  ; Size of GDT, always less one of the true size
-    dd gdt_start                ; Start address of GDT
+    dw gdt_end - gdt_start - 1  ; Size of GDT (16 bit), always less one of the true size
+    dd gdt_start                ; Start address of GDT (32 bit)
 
 ; GDT segment offsets
 CODE_SEG equ gdt_code - gdt_start

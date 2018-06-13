@@ -12,7 +12,7 @@ OBJ = $(C_SOURCES:.c=.o)
 # GDB Debug
 GDB = /usr/local/i386elfgcc/bin/i386-elf-gdb
 # -g: Use debugging symbols in gcc
-CFLAGS = -g
+CFLAGS = -g -m32 -ffreestanding -c
 
 all: os-image.bin
 
@@ -25,7 +25,7 @@ kernel.elf: boot/kernel_entry.o $(OBJ)
 
 # generic rule for compiling c source code
 %.o: %.c $(HEADERS)
-	$(DOCKER) gcc -m32 -ffreestanding -c $< -o $@
+	$(DOCKER) gcc $(CFLAGS) $< -o $@
 
 # assemble kernel entry
 %.o: %.asm
@@ -43,11 +43,11 @@ run: os-image.bin
 
 # Open the connection to qemu and load our kernel-object file with symbols
 debug: os-image.bin kernel.elf
-	qemu-system-i386 -s -drive format=raw,if=floppy,file=$< &
+	qemu-system-i386 -S -s -drive format=raw,if=floppy,file=$< &
 	$(GDB) -ex "target remote localhost:1234" -ex "symbol-file kernel.elf"
 
 clean:
-	rm -fr *.bin *.dis *.o
+	rm -fr *.bin *.dis *.o *.elf
 	rm -fr kernel/*.o boot/*.bin boot/*.o drivers/*.o
 
 kernel.dis: kernel.bin

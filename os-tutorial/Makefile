@@ -5,9 +5,9 @@ CONTAINER = fedora:dev
 DOCKER = $(CONTAINER_COMMAND) $(CONTAINER_FLAGS) $(CONTAINER)
 
 # Source code
-HEADERS = $(wildcard kernel/*.h drivers/*.h)
-C_SOURCES = $(wildcard kernel/*.c drivers/*.c)
-OBJ = $(C_SOURCES:.c=.o)
+HEADERS = $(wildcard kernel/*.h drivers/*.h cpu/*.h)
+C_SOURCES = $(wildcard kernel/*.c drivers/*.c cpu/*.c)
+OBJ = $(C_SOURCES:.c=.o cpu/interrupt.o)
 
 # GDB Debug
 GDB = /usr/local/i386elfgcc/bin/i386-elf-gdb
@@ -29,11 +29,11 @@ kernel.elf: boot/kernel_entry.o $(OBJ)
 
 # assemble kernel entry
 %.o: %.asm
-	$(DOCKER) nasm $< -f elf -I 'boot/' -o $@
+	$(DOCKER) nasm $< -f elf -I 'boot/' -I 'cpu/' -o $@
 
 # assemble the boot binary
 %.bin: %.asm
-	$(DOCKER) nasm $< -f bin -I 'boot/' -o $@
+	$(DOCKER) nasm $< -f bin -I 'boot/' -I 'cpu/' -o $@
 
 os-image.bin: boot/boot.bin kernel.bin
 	cat $^ > $@
@@ -43,12 +43,12 @@ run: os-image.bin
 
 # Open the connection to qemu and load our kernel-object file with symbols
 debug: os-image.bin kernel.elf
-	qemu-system-i386 -S -s -drive format=raw,if=floppy,file=$< &
+	qemu-system-i386 -S -s -drive format=raw,if=floppy,file=$< -d guest_errors,int &
 	$(GDB) -ex "target remote localhost:1234" -ex "symbol-file kernel.elf"
 
 clean:
 	rm -fr *.bin *.dis *.o *.elf
-	rm -fr kernel/*.o boot/*.bin boot/*.o drivers/*.o
+	rm -fr kernel/*.o boot/*.bin boot/*.o drivers/*.o cpu/*.o
 
 kernel.dis: kernel.bin
 	ndisasm -b 32 $< > $@
